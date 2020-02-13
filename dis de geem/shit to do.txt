@@ -1,0 +1,37 @@
+VERY FIRST THINGS:
+-do the scrolling - dun
+-do the rotating as it should be made - DUN
+-add example enemies
+-make a final boss and make scene transitions (levels) - THIS IS ALSO DONE YES
+-make the scrolling stop at the end of the map - dun
+-make the bullets not lag like fuck - dun
+-fix shit ton of bugs
+
+THINGS TO ASK
+-resolution - full HD (wtf)
+-size of tiles
+
+GAME RULES
+-controls
+	-two buttons - one for shooting, one for switching weapons
+	-8-directional movement (with an arcade stick
+-types of enemies (all of them have 5 health):
+	-walking left to right - moving really fast between the boundaries (walls)
+	-spike enemies - reappear from the ground - if they are showing and player collides with them, player takes damage
+	-permanent enemies (spikes?) - just deals damage, doesnt move
+	-explosive enemies - makes an explosion in a radius, where if the player is in the radius, he takes damage
+	-shooting enemies - shoot out stuff
+	-following enemies - go straight down
+-types of bosses
+	-level 1 - 25 health, spawns enemies
+	-level 2 - 50 health, shoots bullets
+	-level 3 - 75 health, shoots homing missiles
+-types of weapons
+	-flamethrower - 3 damage?
+	-regular weapon (gun) - 1 damage
+	-machete (5 damage, 1 hit kill enemies, high risk-high reward)
+-types of powerups
+	-extra life (if you take an extra life and your life is maxed out you get fat (slower movement speed but you get more health - when you lose your max health so does the slowing goes)
+	-faster shooting rate
+	-increase damage (which stack no matter what other powerups you get inbetween) - negative effect - get dealt +1 damage from general enemies for 20-30 secs
+	-fuel for flamethrower
