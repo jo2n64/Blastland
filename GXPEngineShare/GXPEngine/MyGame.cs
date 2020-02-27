@@ -141,6 +141,18 @@ public class MyGame : Game
                 bossBars[level].ThingToAmount = levels[level].B.Health;
                 checkBossBars();
                 checkSelectedWeapon();
+                if (player.Weapons[0].isSelected)
+                {
+                    flamethrower.alpha = 0f;
+                    pistol.alpha = 1f;
+                }
+                if (player.Weapons[1].isSelected)
+                {
+                    flamethrower.alpha = 1f;
+                    pistol.alpha = 0f;
+                }
+                //Console.WriteLine(levels[level].B.Health);
+                Console.WriteLine(player.FireRate);
                 shoot(player);
                 checkFlamethrowerCollision();
                 destroyBullets(bullets);

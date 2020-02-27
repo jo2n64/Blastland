@@ -77,12 +77,12 @@ public class Player : GameObject
         walkTimer = Time.time;
         hitDelay = 2000;
         walkDelay = 276;
-        fireRate = 1;
+        fireRate = 3;
         startSpeed = speed;
         speed = startSpeed;
         xModifier = 0;
         yModifier = 0;
-        damage = 1;
+        damage = 3;
         damageReceived = 1;
         damagePowerupsCollected = 0;
         health = 3;
@@ -112,13 +112,12 @@ public class Player : GameObject
         handleInput();
         checks();
         checkWeaponSwitch();
-        if (health <= 0)
-        {
-            lives--;
-            health = 3;
-            isHit = true;
-            reposition(game.width / 2, game.height - 100);
-        }
+        Console.WriteLine(shootDelay);
+        //if(Time.time >= animTimer + animDelay)
+        //{
+        //    animationSprite.NextFrame();
+        //    animTimer = Time.time;
+        //}
         if (direction.x != 0 || direction.y != 0)
         {
             if (Time.time >= walkDelay + walkTimer)
@@ -205,6 +204,11 @@ public class Player : GameObject
                     {
                         damage--;
                     }
+                    if (fireRate > 1)
+                    {
+                        fireRate--;
+                        shootDelay += 250;
+                    }
                     break;
                 case HealthPowerup h:                    
                     h.LateDestroy();
@@ -230,12 +234,23 @@ public class Player : GameObject
                     {
                         speed -= 2f;
                     }
+                    if (fireRate > 1) {
+                        fireRate--;
+                        shootDelay += 250;
+                        Console.WriteLine(shootDelay);
+                    }
+
                     break;
                 case FireRatePowerup fr:
                     fr.LateDestroy();
                     if (fireRate < maxFireRate)
                     {
-                        fireRate++;
+                        fireRate += 2;
+                        shootDelay -= 500;
+                        if (fireRate > maxFireRate) {
+                            fireRate--;
+                            shootDelay += 250;
+                        }
                     }
                     pickupSound.Play(false);
                     shootDelay /= 2;
