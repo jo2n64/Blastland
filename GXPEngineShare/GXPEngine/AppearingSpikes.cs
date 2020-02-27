@@ -17,9 +17,10 @@ class AppearingSpikes : Enemy
     {
         this.appearDelay = appearDelay;
         this.appearDelay = appearDelay;
-        colliderSprite.SetXY(0, height * 2);
+        colliderSprite.SetXY(width/2, height * 2);
         AddChild(colliderSprite);
         colliderSprite.scaleY = -2f;
+        colliderSprite.scaleX = 0.5f;
         delay = 100;
         timer = Time.time;
         anim = new AnimationSprite("appearingspikes.png", 18, 1);

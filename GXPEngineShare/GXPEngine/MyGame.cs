@@ -16,10 +16,11 @@ public class MyGame : Game
     Player player;
     Canvas screens;
     Font font;
-    private Sound shootSound, flamethrowerSound, enemyDeathSound;
-    private Sound music, gameOver;
+    private Sound shootSound, enemyDeathSound;
+    private Sound music, gameOverMusic, winMusic;
+    private SoundChannel sc, scGameOver, scWin;
     private GameState state;
-    private Image img, tutorialImg, buttonImg, endImg, gameOverImg;
+    private Image img, tutorialImg, buttonImg, endImg, gameOverImg, gameOverButtonImg, endButtonImg;
     public Level[] levels;
     private List<Bullet> bullets;
     private Statsbar[] bossBars;
@@ -33,21 +34,24 @@ public class MyGame : Game
     private int flamethrowerTimer, flamethrowerDelay;
     private int blinkTimer, blinkDelay;
     private int level;
-
+    
     public int Level { get => level; set => level = value; }
 
     public MyGame() : base(1920, 1080, false, false)       // Create a window that's NOT 800x600 and fullscreen
     {
         screens = new Canvas(width, height);
         shootSound = new Sound("sounds/Gun_shot_366402__rach-capache__blowing-up-balloon-and-popping.wav");
-        font = new Font("Robot_Font", 70f);
-        music = new Sound("sounds/Mick Gordon - 02. Rip & Tear.mp3", true, true);
-        gameOver = new Sound("sounds/Sega Rally - 15 Game Over Yeah!.mp3", false, true);
+        font = new Font("Robot_Font", 64f);
         enemyDeathSound = new Sound("sounds/NormalEnemyDeath.wav");
+        music = new Sound("sounds/Mick Gordon - 02. Rip & Tear.ogg", true, false);
+        gameOverMusic = new Sound("sounds/Sega Rally - 15 Game Over Yeah!.mp3", false, true);
+        winMusic = new Sound("sounds/Sonic Advance OST Act Clear.mp3", false, true);
         tutorialImg = Image.FromFile("Instruction_screen.png");
-        endImg = Image.FromFile("endgamescreen.png");
-        gameOverImg = Image.FromFile("gameOverImg.png");
+        endImg = Image.FromFile("endscreenwithout.png");
+        gameOverImg = Image.FromFile("gameoverwithout.png");
         buttonImg = Image.FromFile("startc.png");
+        gameOverButtonImg = Image.FromFile("gameover.png");
+        endButtonImg = Image.FromFile("endscreen.png");
         avatar = new Sprite("avatar.png");
         avatar.SetXY(40, height - 200);
         targetFps = 60;
@@ -85,17 +89,17 @@ public class MyGame : Game
 
     }
 
-    private SoundChannel sc;
+    
 
     void Update()
     {
         // Empty
         //Console.WriteLine(currentFps);
-        if (player.Lives <= 0 && !playerIsDead)
+        if (player.Lives <= 0 && state == GameState.Game)
         {
             state = GameState.GameOver;
-            sc = music.Play(true);
-            gameOver.Play();
+            sc.Stop();
+            scGameOver = gameOverMusic.Play();
             playerIsDead = true;
             clearScreen();
         }
@@ -121,17 +125,17 @@ public class MyGame : Game
             case GameState.Tutorial:
                 screens.graphics.Clear(Color.Empty);
                 screens.graphics.DrawImage(tutorialImg, 0, 0);
-                
                 if (Input.GetKeyDown(Key.ONE) || Input.GetKeyDown(Key.TWO))
                 {
                     reset();
+                    sc = music.Play();
                 }
                 break;
             case GameState.Game:
                 screens.graphics.Clear(Color.Empty);
-                screens.graphics.DrawString("X", font, Brushes.HotPink, 125, height - 225);
-                screens.graphics.DrawString(player.Lives.ToString(),font, Brushes.Black, 225, height - 225);
-                screens.graphics.DrawString("Score: " + player.Score.ToString(), font, Brushes.Black, 20, height / 2);
+                screens.graphics.DrawString("X", font, Brushes.LimeGreen, 130, height - 190);
+                screens.graphics.DrawString(player.Lives.ToString(),font, Brushes.LimeGreen, 225, height - 190);
+                screens.graphics.DrawString("Score: " + player.Score.ToString(), font, Brushes.LimeGreen, 20, height - 300);
                 moveBar.ThingToAmount = (-player.Speed + 10) / 2;
                 damageBar.ThingToAmount = -player.Damage + 1;
                 fireRateBar.ThingToAmount = -player.FireRate + 1;
@@ -140,7 +144,6 @@ public class MyGame : Game
                 bossBars[level].ThingToAmount = levels[level].B.Health;
                 checkBossBars();
                 checkSelectedWeapon();
-               // Console.WriteLine(player.FireRate);
                 Console.WriteLine(fireRateBar.ThingToAmount);
                 if (player.Weapons[0].isSelected)
                 {
@@ -160,31 +163,50 @@ public class MyGame : Game
             case GameState.End:
                 screens.graphics.Clear(Color.Empty);
                 screens.graphics.DrawImage(endImg, 0, 0);
-                screens.graphics.DrawString("Your score: " + player.Score, SystemFonts.DefaultFont, Brushes.Black, width/2, height/2);
+                //screens.graphics.DrawString(player.Score.ToString(), font, Brushes.DarkGreen, width/2 - 50, height - 250);
+                if (isFlashing)
+                {
+                    screens.graphics.DrawImage(endButtonImg, 0, 0);
+
+                }
+                screens.graphics.DrawString(player.Score.ToString(), font, Brushes.DarkGreen, width / 2 - 50, height - 250);
+                if (Time.time >= blinkDelay + blinkTimer)
+                {
+                    isFlashing = !isFlashing;
+                    blinkTimer = Time.time;
+                }
                 if (Input.GetKeyDown(Key.ONE) || Input.GetKeyDown(Key.TWO))
                 {
-                    gameOver.Play(true);
-                    //music.Play();
+                    scWin.Stop();
                     reset();
                 }
                 break;
             case GameState.GameOver:
                 screens.graphics.Clear(Color.Empty);
                 screens.graphics.DrawImage(gameOverImg, 0, 0);
+                if (isFlashing)
+                {
+                    screens.graphics.DrawImage(gameOverButtonImg, 0, 0);
+                }
+                if (Time.time >= blinkDelay + blinkTimer)
+                {
+                    isFlashing = !isFlashing;
+                    blinkTimer = Time.time;
+                }
                 if (Input.GetKeyDown(Key.ONE) || Input.GetKeyDown(Key.TWO))
                 {
-                    gameOver.Play(true, 0, 0);
+                    scGameOver.Stop();
                     state = GameState.Tutorial;
                 }
                 break;
         }
         shakeScreen();
 
-        if(sc != null && !sc.IsPlaying)
-        {
-            Console.WriteLine(" o ");
-            sc = music.Play(false, 0, 1, 0);
-        }
+        //if(sc != null && !sc.IsPlaying)
+        //{
+        //    Console.WriteLine(" o ");
+        //    sc = music.Play(false, 0, 0.5f, 0);
+        //}
         //Console.WriteLine("{0} {1}", sc.IsPlaying, sc.IsPaused);
         //sc = music.Play();
     }
@@ -342,6 +364,8 @@ public class MyGame : Game
                         clearScreen();
                         boss.LateDestroy();
                         state = GameState.End;
+                        sc.Stop();
+                        scWin = winMusic.Play();
                         level = 0;
                     }
                 }
@@ -364,7 +388,7 @@ public class MyGame : Game
                     buls.Remove(b);
                     break;
                 }
-                if (b.HitTest(temp.Anim))
+                if (b.HitTest(temp.ColliderSprite))
                 {
                     b.LateDestroy();
                     buls.Remove(b);
@@ -413,11 +437,16 @@ public class MyGame : Game
         for (int i = 0; i < levels[level].Enemies.Count; i++)
         {
             Enemy temp = levels[level].Enemies[i];
-            if (flamethrower.Anim.HitTest(temp.Anim) && flamethrower.isSelected && flamethrower.IsUsed)
+            if (flamethrower.Anim.HitTest(temp.ColliderSprite) && flamethrower.isSelected && flamethrower.IsUsed)
             {
                 temp.Health -= flamethrower.Damage;
                 temp.isHit = true;
-                if (temp.Health <= 0) temp.LateDestroy();
+
+                if (temp.Health <= 0)
+                {
+                    temp.LateDestroy();
+                    shakeScreen();
+                }
             }
             Boss b = levels[level].B;
             if (flamethrower.Anim.HitTest(b.Anim) && flamethrower.isSelected && flamethrower.IsUsed && !bossDamaged)
@@ -442,6 +471,8 @@ public class MyGame : Game
                         clearScreen();
                         b.LateDestroy();
                         state = GameState.End;
+                        sc.Stop();
+                        scWin = winMusic.Play();
                         level = 0;
                     }
                 }

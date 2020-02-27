@@ -108,6 +108,12 @@ public class Player : GameObject
 
     private void Update()
     {
+        if(health <= 0)
+        {
+            isHit = true;
+            lives--;
+            health = 3;
+        }
         move();
         handleInput();
         checks();
@@ -191,11 +197,12 @@ public class Player : GameObject
                     break;
                 case MovementPowerup mP:
                     mP.LateDestroy();
+                    pickupSound.Play(false);
                     if (speed < 20)
                     {
-                        speed += 2;                             
+                        speed += 2;
                     }
-                    if(fireRate > 1)
+                    if (fireRate > 1)
                     {
                         fireRate--;
                         shootDelay *= 2;
@@ -237,7 +244,6 @@ public class Player : GameObject
                     if (fireRate > 1) {
                         fireRate--;
                         shootDelay += 250;
-                        Console.WriteLine(shootDelay);
                     }
 
                     break;
@@ -246,12 +252,13 @@ public class Player : GameObject
                     if (fireRate < maxFireRate)
                     {
                         fireRate += 2;
-                        shootDelay /= 2;
-                        // shootDelay -= 500;
-                        //if (fireRate > maxFireRate) {
-                        //    fireRate--;
-                        //    shootDelay += 250;
-                        //}
+                        //shootDelay /= 2;
+                        shootDelay -= 500;
+                        if (fireRate > maxFireRate)
+                        {
+                            fireRate--;
+                            shootDelay += 250;
+                        }
                     }
                     pickupSound.Play(false);
 
