@@ -15,16 +15,19 @@ public class MyGame : Game
     }
     Player player;
     Canvas screens;
-    private Sound shootSound, flamethrowerSound;
-    private Sound music;
+    private Sound shootSound, flamethrowerSound, enemyDeathSound;
+    private Sound music, gameOver;
     private GameState state;
-    private Image img, tutorialImg, endImg;
+    private Image img, tutorialImg, endImg, gameOverImg;
     private HUD hud;
     private Level[] levels;
     private List<Bullet> bullets;
-    private Healthbar hpBar;
+    private Statsbar[] bossBars;
     private float shake;
-    private Statsbar moveBar, damageBar, fireRateBar;
+    private bool isShaking, playerIsDead;
+    private Statsbar moveBar, damageBar, fireRateBar, healthBar, fuelBar;
+    private Sprite pistol, flamethrower;
+    private Sprite avatar;
     //private GameManager manager;
     private int shakeTimer, shakeDelay;
     private int level;
@@ -36,32 +39,42 @@ public class MyGame : Game
         screens = new Canvas(width, height);
         shootSound = new Sound("sounds/Gun_shot_366402__rach-capache__blowing-up-balloon-and-popping.wav");
         flamethrowerSound = new Sound("sounds/FlameTrowerLong460570__15f-panska-paril-silvestr__flametrower.wav", true, false);
-        //music = new Sound("sounds/Mick Gordon - 02. Rip & Tear.mp3", true, true);
-        img = Image.FromFile("startupscreen.png");
+        music = new Sound("sounds/Mick Gordon - 02. Rip & Tear.mp3", true, true);
+        gameOver = new Sound("sounds/Sega Rally - 15 Game Over Yeah!.mp3", true);
+        enemyDeathSound = new Sound("sounds/NormalEnemyDeath.wav");
         tutorialImg = Image.FromFile("Instruction_screen.png");
         endImg = Image.FromFile("endgamescreen.png");
+        gameOverImg = Image.FromFile("gameOverImg.png");
+        avatar = new Sprite("avatar.png");
+        avatar.SetXY(50, height - 300);
         targetFps = 60;
-        level = 2;
+        level = 0;
+        isShaking = false;
         state = GameState.Startup;
         levels = new Level[3];
         player = new Player(15f, 15f);
-        levels[0] = new Level(player, "assets/samplelevel.tmx", this);
-        levels[1] = new Level(player, "assets/level2.tmx", this);
-        levels[2] = new Level(player, "assets/level3.tmx", this);
+        loadLevels();
         bullets = new List<Bullet>();
         screens = new Canvas(1920, 1080);
         img = Image.FromFile("startupscreen.png");
         hud = new HUD(player);
-        hpBar = new Healthbar(width / 2 - 400, 20, levels[level].B);
-        moveBar = new Statsbar(width - 450, 100, player, "moveSpeed.png", "health.png", (int)player.SpeedX);
-        damageBar = new Statsbar(width - 450, 200, player, "moveSpeed.png", "health.png", player.Damage);
-        fireRateBar = new Statsbar(width - 450, 300, player, "moveSpeed.png", "health.png", player.FireRate);
+        bossBars = new Statsbar[3];
+        moveBar = new Statsbar(width - 300, 100, player, "statbarmovement.png", "health.png", player.Speed);
+        damageBar = new Statsbar(width - 300, 200, player, "statbar.png", "health.png", player.Damage);
+        fireRateBar = new Statsbar(width - 300, 300, player, "statbarfirerate.png", "health.png", player.FireRate);
+        healthBar = new Statsbar(width - 425, height - 250, player, "healthbarplayer.png", "playerhealth.png", player.Health);
+        fuelBar = new Statsbar(width - 425, height - 150, player, "fuelbar.png", "playerfuel.png", player.Fuel);
+        flamethrower = new Sprite("flamethrower.png");
+        pistol = new Sprite("pistol.png");
+        pistol.SetXY(width - 300, 400);
+        flamethrower.SetXY(width - 300, 400);
+        img = Image.FromFile("startupscreen.png");
         //player.SetLevel(levels[0]);
         //manager = new GameManager();
         //manager.SetState(GameManager.GameState.Level2);
         //AddChild(manager);
         shakeTimer = Time.time;
-        shakeDelay = 500;
+        shakeDelay = 200;
         AddChild(screens);
 
     }
@@ -70,67 +83,94 @@ public class MyGame : Game
     {
         // Empty
         //Console.WriteLine(currentFps);
-
-
-        if(levels[level].B.y + levels[level].B.height> 0) AddChild(hpBar);
+        if (player.Lives <= 0 && !playerIsDead)
+        {
+            state = GameState.GameOver;
+            music.Play(true);
+            gameOver.Play();
+            playerIsDead = true;
+            RemoveChild(levels[0]);
+            clearScreen();
+        }
+        if (levels[level].B.y + levels[level].B.height > 0) AddChild(bossBars[level]);
         switch (state)
         {
             case GameState.Startup:
                 screens.graphics.DrawImage(img, 0, 0);
-                if (Input.GetKeyDown(Key.SPACE))
+                if (Input.GetKeyDown(Key.ONE) || Input.GetKeyDown(Key.TWO))
                 {
                     state = GameState.Tutorial;
                 }
                 break;
-            case GameState.Tutorial:               
+            case GameState.Tutorial:
                 screens.graphics.Clear(Color.Empty);
                 screens.graphics.DrawImage(tutorialImg, 0, 0);
-                if (Input.GetKeyDown(Key.SPACE))
+                if (Input.GetKeyDown(Key.ONE) || Input.GetKeyDown(Key.TWO))
                 {
-                    state = GameState.Game;
-                    switchLevel(level);
-                    AddChild(player);
-                    AddChild(hud);
-                    AddChild(moveBar);
-                    AddChild(damageBar);
-                    AddChild(fireRateBar);
-                    //music.Play();
+                    reset();
                 }
                 break;
             case GameState.Game:
                 screens.graphics.Clear(Color.Empty);
-                moveBar.ThingToAmount = (int)player.SpeedX;
-                damageBar.ThingToAmount = player.Damage;
-                fireRateBar.ThingToAmount = player.FireRate;
+                moveBar.ThingToAmount = -player.Speed / 5;
+                damageBar.ThingToAmount = -player.Damage;
+                fireRateBar.ThingToAmount = -player.FireRate;
+                healthBar.ThingToAmount = -player.Health * 3f;
+                fuelBar.ThingToAmount = -player.Fuel;
+                bossBars[level].ThingToAmount = levels[level].B.Health;
+                if (player.Weapons[0].isSelected)
+                {
+                    flamethrower.alpha = 0f;
+                    pistol.alpha = 1f;
+                }
+                if (player.Weapons[1].isSelected)
+                {
+                    flamethrower.alpha = 1f;
+                    pistol.alpha = 0f;
+                }
+                Console.WriteLine(levels[level].B.Health);
                 shoot(player);
-                checkWeaponCollision(player.Weapons);
+                checkFlamethrowerCollision();
                 destroyBullets(bullets);
+                bossChecks(bullets);
                 break;
             case GameState.End:
                 screens.graphics.Clear(Color.Empty);
                 screens.graphics.DrawImage(endImg, 0, 0);
-                if (Input.GetKeyDown(Key.SPACE))
+                screens.graphics.DrawString("Your score: " + player.Score, SystemFonts.DefaultFont, Brushes.Black, width/2, height/2);
+                if (Input.GetKeyDown(Key.ONE) || Input.GetKeyDown(Key.TWO))
                 {
-                    level = 0;
-                    state = GameState.Game;
-                    switchLevel(level);
-                    AddChild(player);
-                    AddChild(hud);
-                    AddChild(moveBar);
-                    AddChild(damageBar);
-                    AddChild(fireRateBar);
+                    levels[0] = new Level(player, "assets/samplelevel.tmx", this);
+                    gameOver.Play(true);
+                    //music.Play();
+                    reset();
                 }
                 break;
             case GameState.GameOver:
+                screens.graphics.Clear(Color.Empty);
+                screens.graphics.DrawImage(gameOverImg, 0, 0);
+                if (Input.GetKeyDown(Key.ONE) || Input.GetKeyDown(Key.TWO))
+                {
+                    levels[0] = new Level(player, "assets/samplelevel.tmx", this);
+                    gameOver.Play(true);
+                    //music.Play();
+                    reset();
+                }
                 break;
         }
 
-        if (Input.GetKeyDown(Key.SPACE) && state == GameState.Tutorial)
+        if (isShaking)
         {
-            screens.graphics.Clear(Color.Empty);
-            shoot(player);
-            checkWeaponCollision(player.Weapons);
-            destroyBullets(bullets);
+            shake = Mathf.Sin(Time.time / 10f);
+            x = shake;
+            y = shake;
+        }
+        if (Time.time >= shakeTimer + shakeDelay)
+        {
+            x = 0;
+            y = 0;
+            isShaking = false;
+            shakeTimer = Time.time;
         }
 
     }
@@ -142,35 +182,108 @@ public class MyGame : Game
 
     private void shoot(Player player)
     {
-        if (Input.GetKey(Key.SPACE) && player.Weapons[0].isSelected)
+        if (Input.GetKey(Key.TWO) && player.Weapons[0].isSelected)
         {
             if (Time.time > player.ShootDelay + player.ShootTimer)
             {
                 Bullet b = new Bullet(player.x, player.y, 0, -25, player.Sprite.rotation);
                 shootSound.Play();
                 bullets.Add(b);
-                AddChild(b);
+                AddChildAt(b, 1);
                 player.ShootTimer = Time.time;
                 //Console.WriteLine(level);
             }
         }
     }
 
+    private void reset()
+    {
+        state = GameState.Game;
+        //player.Lives = 3;
+        //player.Score = 0;
+        //player.Damage = 1;
+        //player.FireRate = 1;
+        //player.ShootDelay = 800;
+        playerIsDead = false;
+        player = new Player(15f, 15f);
+        player.reposition(width / 2, height - 100);
+        switchLevel(level);
+        AddChild(player);
+        AddChild(hud);
+        AddChild(moveBar);
+        AddChild(damageBar);
+        AddChild(fireRateBar);
+        AddChild(healthBar);
+        AddChild(fuelBar);
+        AddChild(pistol);
+        AddChild(flamethrower);
+        AddChild(avatar);
+        //music.Play();
+    }
+
+    private void loadLevels()
+    {
+        levels[0] = new Level(player, "assets/samplelevel.tmx", this);
+        levels[1] = new Level(player, "assets/level2.tmx", this);
+        levels[2] = new Level(player, "assets/level3.tmx", this);
+    }
     private void switchLevel(int level)
     {
         switch (level)
         {
             case 0:
-                AddChild(levels[0]);
+                loadLevels();
+                bossBars[0] = new Statsbar(width / 2 - 300, 20, player, "healthbar.png", "bosshealth.png", levels[0].B.Health);
+                bossBars[0].Amount.SetXY(70, 40);
+                AddChildAt(levels[0], 0);
                 break;
             case 1:
                 RemoveChild(levels[0]);
+                levels[0].B.removeSpawns();
+                bossBars[1] = new Statsbar(width / 2 - 300, 20, player, "healthbar.png", "bosshealth2.png", levels[1].B.Health);
+                bossBars[1].Amount.SetXY(70, 40);
                 AddChildAt(levels[1], 0);
                 break;
             case 2:
                 RemoveChild(levels[1]);
+                bossBars[2] = new Statsbar(width / 2 - 300, 20, player, "healthbar.png", "bosshealth3.png", levels[2].B.Health);
+                bossBars[2].Amount.SetXY(70, 40);
                 AddChildAt(levels[2], 0);
                 break;
+        }
+    }
+
+    private void bossChecks(List<Bullet> buls)
+    {
+        for (int i = 0; i < buls.Count; i++)
+        {
+            Bullet b = buls[i];
+            Boss boss = levels[level].B;
+            if (b.HitTest(boss.Anim))
+            {
+                b.LateDestroy();
+                buls.Remove(b);
+                boss.Health -= player.Damage;
+                Console.WriteLine("Boss health is " + boss.Health);
+                if (boss.Health <= 0)
+                {
+                    if (level < 2)
+                    {
+                        RemoveChild(bossBars[level]);
+                        boss.LateDestroy();
+                        switchLevel(level + 1);
+                        level++;
+                    }
+                    else
+                    {
+                        clearScreen();
+                        boss.LateDestroy();
+                        state = GameState.End;
+                        level = 0;
+                    }
+                }
+
+            }
         }
     }
 
@@ -188,44 +301,23 @@ public class MyGame : Game
                     buls.Remove(b);
                     break;
                 }
-                if (b.HitTest(temp))
+                if (b.HitTest(temp.Anim))
                 {
-                    //shakeScreen();
                     b.LateDestroy();
                     buls.Remove(b);
+                    shakeScreen();
                     temp.Health -= player.Damage;
-                    levels[level].shakeScreen();
-                    if(temp is Boss)
-                    {
-                        hpBar.Health.scaleX -= 1.5f * player.Damage;
-                    }
+                    Console.WriteLine(isShaking);
                     if (temp.Health <= 0)
                     {
-                        levels[level].Enemies.Remove(temp); 
+                        levels[level].Enemies.Remove(temp);
                         player.Score += 5;
                         temp.isDead = true;
+                        enemyDeathSound.Play();
                         if (!(temp is ExplosiveEnemy))
                         {
                             temp.LateDestroy();
-                        }
-                        if (temp is Boss)
-                        {
-                            if (level < 2)
-                            {
-                                RemoveChild(hpBar);
-                                switchLevel(level + 1);
-                                level++;
-                                hpBar.setBoss(levels[level].B);
-                            }
-                            else
-                            {
-                                RemoveChild(player);
-                                RemoveChild(hud);
-                                RemoveChild(moveBar);
-                                RemoveChild(damageBar);
-                                RemoveChild(fireRateBar);
-                                state = GameState.End;
-                            }
+                            isShaking = true;
                         }
                     }
                 }
@@ -233,27 +325,56 @@ public class MyGame : Game
         }
     }
 
-    private void shakeScreen() {
-        shake = Mathf.Sin(60f);
-        x = shake;
-        if(Time.time >= shakeTimer + shakeDelay)
+    private void clearScreen()
+    {
+        for(int i = 0; i < levels.Length; i++)
         {
-            x = 0;
-            shakeTimer = Time.time;
+            if (levels[i].InHierarchy())
+            {
+                RemoveChild(levels[i]);
+            }
+            RemoveChild(levels[level].B);
+        }
+        Boss3 boss = levels[2].B as Boss3;
+        boss.removeMissiles();
+        RemoveChild(player);
+        RemoveChild(hud);
+        RemoveChild(moveBar);
+        RemoveChild(damageBar);
+        RemoveChild(fireRateBar);
+        RemoveChild(healthBar);
+        RemoveChild(fuelBar);
+        RemoveChild(bossBars[level]);
+        RemoveChild(pistol);
+        RemoveChild(flamethrower);
+        RemoveChild(avatar);
+    }
+
+    private void shakeScreen()
+    {
+        if (isShaking)
+        {
+            shake = Mathf.Sin(Time.time / 60f);
+            x = shake;
+            if (Time.time >= shakeTimer + shakeDelay)
+            {
+                isShaking = false;
+                x = 0;
+                shakeTimer = Time.time;
+            }
         }
     }
 
-    private void checkWeaponCollision(Weapon[] weapons)
+    private void checkFlamethrowerCollision()
     {
-        for (int i = 0; i < weapons.Length; i++)
+        Flamethrower flamethrower = player.Weapons[1] as Flamethrower;
+        for (int i = 0; i < levels[level].Enemies.Count; i++)
         {
-            Weapon w = player.Weapons[i];
-            for (int j = 0; j < levels[level].Enemies.Count; j++)
+            Enemy temp = levels[level].Enemies[i];
+            if (flamethrower.HitTest(temp) && flamethrower.isSelected)
             {
-                Enemy temp = levels[level].Enemies[j];
-                if (w.HitTest(temp))
-                {
-                }
+                temp.Health -= flamethrower.Damage;
+                if (temp.Health <= 0) temp.LateDestroy();
             }
         }
     }

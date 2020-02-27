@@ -6,42 +6,42 @@ using GXPEngine;
 using GXPEngine.Core;
 class Missile : Sprite
 {
-    private float speedX, speedY;
     private Player player;
-    private Vector2 pos;
-    private Vector2 target;
-    Vector2 playerPos;
+    private Vector2 position, target;
+    private float speedX, speedY;
     public Missile(float x, float y, float speedX, float speedY, Player player) : base("0.png")
     {
+        SetXY(x, y);
         this.player = player;
-        playerPos = new Vector2(player.x, player.y);
         this.speedX = speedX;
         this.speedY = speedY;
-        SetXY(x, y);
-        pos = new Vector2(x, y);
+        position = new Vector2(x, y);
+        target = new Vector2(player.x, player.y);
     }
 
-    private void Update() {
-        pos.x = x;
-        pos.y = y;
-        target.x = playerPos.x;
-        target.y = playerPos.y;
+    public void Update() {
+        position.x = x;
+        position.y = y;
+        target.x = player.x;
+        target.y = player.y;
         follow();
         checks();
     }
+
     private void checks() {
-        if (y > game.height || y < 0) LateDestroy();
-        foreach(GameObject g in GetCollisions())
+        foreach (GameObject g in GetCollisions())
         {
-            if(g is Bullet || g is Player || g is Wall || g is Wall2)
+            if (g is Bullet)
             {
                 LateDestroy();
+                g.LateDestroy();
             }
         }
     }
+
     private void follow() {
-        float dX = target.x - pos.x;
-        float dY = target.y - pos.y;
+        float dX = target.x - position.x;
+        float dY = target.y - position.y;
         float normal = Mathf.Sqrt(dX * dX + dY * dY);
         Move(dX / normal * speedX, dY / normal * speedY);
     }

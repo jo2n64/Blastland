@@ -6,15 +6,15 @@ using GXPEngine;
 class Statsbar : GameObject
 {
     Sprite bar, amount;
-    private int thingToAmount;
+    private float thingToAmount;
     Player player;
-    public Statsbar(float x, float y, Player player, string barPath, string amountPath, int thingToAmount) : base()
+    public Statsbar(float x, float y, Player player, string barPath, string amountPath, float thingToAmount) : base()
     {
         SetXY(x, y);
         this.thingToAmount = thingToAmount;
         bar = new Sprite(barPath);
         amount = new Sprite(amountPath);
-        amount.SetXY(50, bar.height / 2 - 30);
+        amount.SetXY(bar.width - 70, bar.height / 2 - 20);
         AddChild(amount);
         AddChild(bar);
         
@@ -22,7 +22,8 @@ class Statsbar : GameObject
         amount.scaleX = thingToAmount;
     }
 
-    public int ThingToAmount { get => thingToAmount; set => thingToAmount = value; }
+    public float ThingToAmount { get => thingToAmount; set => thingToAmount = value; }
+    public Sprite Amount { get => amount; set => amount = value; }
 
     private void Update() {
         amount.scaleX = thingToAmount;

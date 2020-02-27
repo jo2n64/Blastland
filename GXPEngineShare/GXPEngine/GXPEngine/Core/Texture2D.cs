@@ -40,7 +40,7 @@ namespace GXPEngine.Core
 		//														GetInstance()
 		//------------------------------------------------------------------------------------------------------------------------
 		public static Texture2D GetInstance (string filename, bool keepInCache=false) {
-			Texture2D tex2d = LoadCache[filename] as Texture2D;
+			 Texture2D tex2d = LoadCache[filename] as Texture2D;
 			if (tex2d == null) {
 				tex2d = new Texture2D(filename);
 				LoadCache[filename] = tex2d;
@@ -122,7 +122,7 @@ namespace GXPEngine.Core
 			try {
 				bitmap = new Bitmap(filename);
 			} catch {
-				throw new Exception("Image " + filename + " cannot be found.");
+				 throw new Exception("Image " + filename + " cannot be found.");
 			}
 			SetBitmap(bitmap);
 		}

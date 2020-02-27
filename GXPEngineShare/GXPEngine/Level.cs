@@ -59,13 +59,17 @@ class Level : GameObject
             checkEndOfLevel();
             if (!hasReachedEnd)
             {
-                scrollTiles(-20f * player.Direction.y);
+                scrollTiles(-player.Speed * player.Direction.y * 2);
                 player.y = game.height - game.height / 3;
                 destroyTiles();
             }
 
         }
-        if (hasReachedEnd) scrollTiles(0f);
+        if (hasReachedEnd)
+        {
+            scrollTiles(0f);
+            if (player.y < game.height / 2) player.y = game.height / 2;
+        }
     }
 
     public void shakeScreen() {
@@ -173,6 +177,12 @@ class Level : GameObject
                         AddChild(spr);
                         sprites.Add(spr);
                         break;
+                    case 433:
+                        spr = new Sprite("monsterTiles.png");
+                        spr.SetXY(x * 128, (y - height) * 128 + game.height);
+                        AddChild(spr);
+                        sprites.Add(spr);
+                        break;
                 }
 
             }
@@ -202,6 +212,7 @@ class Level : GameObject
             Powerup p = powerups.ElementAt(i);
             p.Move(0, yModifier);
         }
+        b.Move(0, yModifier);
     }
 
     private void renderObjects(Map map)
@@ -216,12 +227,12 @@ class Level : GameObject
             {
                 case "PlayerSpawn":
                     player.reposition(game.width / 2, game.height - 200);
-                    player.SpeedX = obj.GetFloatProperty("moveX");
-                    player.SpeedY = obj.GetFloatProperty("moveY");
+                    player.Speed = obj.GetFloatProperty("moveX");
+                    player.Speed = obj.GetFloatProperty("moveY");
                     //Console.WriteLine(player.y);
                     break;
                 case "Enemy":
-                    e = new Enemy(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("moveX"), obj.GetFloatProperty("moveY"), obj.GetFloatProperty("scale"));
+                    e = new Enemy(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("moveX"), obj.GetFloatProperty("moveY"), obj.GetFloatProperty("scale"), "crawlingthing.png", 6, 1);
                     enemies.Add(e);
                     AddChild(e);
                     break;
@@ -251,19 +262,16 @@ class Level : GameObject
                     enemies.Add(e);
                     break;
                 case "Boss":
-                    b = new Boss(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("moveX"), obj.GetFloatProperty("moveY"), obj.GetFloatProperty("scale"), player);
+                    b = new Boss(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), player, obj.GetIntProperty("health"));
                     AddChild(b);
-                    enemies.Add(b);
                     break;
                 case "Boss2":
-                    b = new Boss2(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"));
+                    b = new Boss2(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), obj.GetIntProperty("health"));
                     AddChild(b);
-                    enemies.Add(b);
                     break;
                 case "Boss3":
-                    b = new Boss3(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), player, obj.GetIntProperty("shootDelay"));
+                    b = new Boss3(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), player, obj.GetIntProperty("shootDelay"), obj.GetIntProperty("health"));
                     AddChild(b);
-                    enemies.Add(b);
                     break;
                 case "Heart":
                     powerup = new HealthPowerup(obj.X, obj.Y - height * 128 + game.height);
@@ -285,7 +293,11 @@ class Level : GameObject
                     AddChild(powerup);
                     powerups.Add(powerup);
                     break;
-
+                case "MovementPowerup":
+                    powerup = new MovementPowerup(obj.X, obj.Y - height * 128 + game.height);
+                    AddChild(powerup);
+                    powerups.Add(powerup);
+                    break;
             }
         }
     }

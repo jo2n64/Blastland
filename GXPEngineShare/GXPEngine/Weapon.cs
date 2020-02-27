@@ -6,7 +6,6 @@ using GXPEngine;
 class Weapon : Sprite
 {
     public bool isSelected;
-    public bool isUsed;
     public Weapon(float x, float y, string path) : base(path)
     {
         SetXY(x, y);

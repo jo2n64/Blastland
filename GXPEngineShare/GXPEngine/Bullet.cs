@@ -34,7 +34,11 @@ class Bullet : Sprite
     }
 
     private void checks() {
-        if (y > game.height || y < 0 || x < 0 || x > game.width) LateDestroy();
+        if (y > game.height || y < 0 || x < 0 || x > game.width)
+        {
+            LateDestroy();
+            Console.WriteLine("destroyed");
+        }
     }
 }
 

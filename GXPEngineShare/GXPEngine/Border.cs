@@ -8,6 +8,7 @@ class Border : Sprite
     public Border(int x, int y) : base("assets/sprite_2.png")
     {
         SetXY(x, y);
+        alpha = 0f;
     }
 }
 

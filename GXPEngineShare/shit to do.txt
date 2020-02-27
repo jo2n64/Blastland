@@ -8,31 +8,15 @@ VERY FIRST THINGS:
 -fix shit ton of bugs
 
 
-VERY NEXT THINGS:
--add different weapons (gun (endless supply of bullets), flamethrower(flames), knife) - done on 18/02/2020, took about an hour and a half, very core mechanics (havent made the flamethrower use fuel, as well as just not use the flamethrower when picked; make the pistol spawn the bullets instead of the bullets themselves/player?)
--add powerups (life pickups (+1 health, slower movement), shooting rate (less time between shots), damage increase (increase bullet damage), fuel(increase fuel amount)) - done on 17/02/2020, took around 2 hours
--add health to player, enemies and bosses - done on 14/2/20
-
--when scrolling ends make the player move freely around - done on 14/2/20
--add behaviour to enemies:
-	-walking left to right - reverse speedX when hitting walls - done on 14/2/20
-	-spike enemies (objects in tiled) - have two anim frames and add a bool that checks if the enemy is up - done on 18/2/20
-	-add tiles for just spikes - done on 14/2/20
-	-explosive enemies (objects in tiled) - when killed, increase the scale if it's lower than 3 or smth, if player collides in that, he takes damage - done on 20/2/20
-	-shooting enemies - shoot bullets in the direction of the player (but not follow !!!!!!!!) - made them shoot but not follow the player (kms)
-	-following enemies - just follows the position of the player - done on 18/2/20
--add behaviour to bosses:
-	-level 1 boss - every certain seconds it spawns enemies from 2/3 spawn points - done on 19/2/20
-	-level 2 boss - every certain seconds it shoots bullets in a line - done on 22/2/20
-	-level 3 boss - every certain seconds it shoots homing missiles (constantly following the player, but they can be destroyed if the player hits them)
--add animations to the player
--add animations to enemies and bosses for all of their behaviours
--add a idle screen (for inserting coin, and you can start playing only if you insert a coin) - dun?
--add a screen between levels
--add a final screen which restarts when pressed
--add a basic hud (lives, score, weapon used, fuel left) - dun
--add basic sounds
--make the maps in 128x128 tiles - dun
+STUFF THAT NEED TO BE DONE:
+-make the last boss work - DUN(?)
+-figure out the bars
+-figure out how to restart the levels - DUN
+-fix up the flamethrower
+-fix the music stopping
+-highscore at the end
+-reseting stats
+-SCREEN.SHAKE - DUN
 
 MAJOR BUGS THAT NEED FIXING:
 -fix the scrolling - it's weird rn

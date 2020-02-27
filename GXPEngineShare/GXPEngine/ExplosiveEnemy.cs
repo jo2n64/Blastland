@@ -9,11 +9,10 @@ class ExplosiveEnemy : Enemy
     private int delay, timer;
     private AnimationSprite anim;
     private Sound explosionSound;
-    public ExplosiveEnemy(float x, float y, float speedX, float speedY) : base(x, y, speedX, speedY, 1)
+    public ExplosiveEnemy(float x, float y, float speedX, float speedY) : base(x, y, speedX, speedY, 1, "plantspriteshee2222t.png", 6, 1)
     {
-        anim = new AnimationSprite("plantspriteshee2222t.png", 6, 1);
         explosionSound = new Sound("sounds/Enemy_exploding459973__florianreichelt__huge-explosion.wav");
-        AddChild(anim);
+       // AddChild(anim);
         enlargeTimer = Time.time;
         enlargeDelay = 50;
         timer = Time.time;
@@ -25,11 +24,14 @@ class ExplosiveEnemy : Enemy
         handleAnim();
     }
 
-    private void handleAnim() { 
-        if(Time.time > timer + delay)
+    private void handleAnim() {
+        if (anim != null)
         {
-            anim.NextFrame();
-            timer = Time.time;
+            if (Time.time > timer + delay)
+            {
+                anim.NextFrame();
+                timer = Time.time;
+            }
         }
     }
 

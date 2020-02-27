@@ -10,7 +10,7 @@ class Shooter : Enemy
     private Vector2 start, target;
     private int timer, delay;
     private Sound shootSound;
-    public Shooter(float x, float y, float speedX, float speedY, Player player, int delay) : base(x, y, speedX, speedY, 1)
+    public Shooter(float x, float y, float speedX, float speedY, Player player, int delay) : base(x, y, speedX, speedY, 1, "crawlingthing.png", 6, 1)
     {
         this.player = player;
         start = new Vector2(x, y);
