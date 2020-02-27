@@ -72,17 +72,17 @@ class Player : GameObject
         sprite.SetOrigin(sprite.width / 2.0f, sprite.height / 2.0f);
         animationSprite.SetScaleXY(0.5f, 0.5f);
         animationSprite.SetOrigin(sprite.width, sprite.height * 2);
-        shootDelay = 800;
+        shootDelay = 650;
         shootTimer = Time.time;
         hitTimer = Time.time;
         walkTimer = Time.time;
         hitDelay = 2000;
         walkDelay = 276;
-        fireRate = 2;
+        fireRate = 3;
         startSpeed = speed;
         xModifier = 0;
         yModifier = 0;
-        damage = 2;
+        damage = 3;
         damageReceived = 1;
         damagePowerupsCollected = 0;
         health = 3;
@@ -107,7 +107,7 @@ class Player : GameObject
         handleInput();
         checks();
         checkWeaponSwitch();
-
+        Console.WriteLine(shootDelay);
         //if(Time.time >= animTimer + animDelay)
         //{
         //    animationSprite.NextFrame();
@@ -206,7 +206,7 @@ class Player : GameObject
                     if (fireRate > 1)
                     {
                         fireRate--;
-                        shootDelay += 500;
+                        shootDelay += 250;
                     }
                     break;
                 case HealthPowerup h:                    
@@ -239,7 +239,8 @@ class Player : GameObject
                     }
                     if (fireRate > 1) {
                         fireRate--;
-                        shootDelay += 500;
+                        shootDelay += 250;
+                        Console.WriteLine(shootDelay);
                     }
 
                     break;
@@ -249,10 +250,10 @@ class Player : GameObject
                     if (fireRate < maxFireRate)
                     {
                         fireRate += 2;
-                        shootDelay -= 1000;
+                        shootDelay -= 500;
                         if (fireRate > maxFireRate) {
                             fireRate--;
-                            shootDelay += 500;
+                            shootDelay += 250;
                         }
                     }
                     if (damage > 1)

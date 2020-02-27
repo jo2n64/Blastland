@@ -15,6 +15,7 @@ class ExplosiveEnemy : Enemy
        // AddChild(anim);
         enlargeTimer = Time.time;
         enlargeDelay = 50;
+        health = 1;
         timer = Time.time;
         delay = 200;
     }

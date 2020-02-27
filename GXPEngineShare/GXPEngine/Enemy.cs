@@ -20,7 +20,7 @@ class Enemy : Sprite
     {
         alpha = 0f;
         isDead = false;
-        health = 3;
+        health = 9;
         SetXY(x, y);
         SetScaleXY(scale);
         anim = new AnimationSprite(animPath, cols, rows);
