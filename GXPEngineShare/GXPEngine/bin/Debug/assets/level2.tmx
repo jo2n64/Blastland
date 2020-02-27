@@ -18,19 +18,19 @@
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,2,0,0,0,0,0,0,0,0,0,
+0,0,0,0,433,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,2,0,0,0,0,0,433,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,2,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,433,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,2,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,2,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,2,0,433,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,433,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,2,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,433,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,2,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
@@ -48,7 +48,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,2,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,4,0,0,4,0,0,4,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,2,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,
@@ -61,7 +61,7 @@
 </data>
  </layer>
  <objectgroup id="2" name="Object Layer 1">
-  <object id="1" name="Enemy" x="384" y="1408" width="128" height="128">
+  <object id="3" name="Boss2" x="704" y="380" width="128" height="128">
    <properties>
     <property name="health" type="int" value="50"/>
     <property name="scale" type="float" value="4"/>
@@ -92,21 +92,24 @@
    <properties>
     <property name="appearDelay" type="int" value="800"/>
     <property name="moveX" type="float" value="0"/>
-    <property name="moveY" type="float" value="50"/>
+    <property name="moveY" type="float" value="0"/>
     <property name="scale" type="float" value="1"/>
    </properties>
   </object>
-  <object id="2" name="Enemy" x="768" y="2048" width="128" height="128">
+  <object id="8" name="AppearingSpikes" x="1153.12" y="2429.94" width="128" height="128">
    <properties>
+    <property name="appearDelay" type="int" value="800"/>
     <property name="moveX" type="float" value="0"/>
-    <property name="moveY" type="float" value="50"/>
+    <property name="moveY" type="float" value="0"/>
     <property name="scale" type="float" value="1"/>
    </properties>
   </object>
-  <object id="3" name="Boss2" x="640" y="384" width="128" height="128">
+  <object id="9" name="AppearingSpikes" x="511.758" y="2302.67" width="128" height="128">
    <properties>
-    <property name="health" type="int" value="50"/>
-    <property name="scale" type="float" value="4"/>
+    <property name="appearDelay" type="int" value="800"/>
+    <property name="moveX" type="float" value="0"/>
+    <property name="moveY" type="float" value="0"/>
+    <property name="scale" type="float" value="1"/>
    </properties>
   </object>
   <object id="10" name="AppearingSpikes" x="1026.91" y="1536" width="128" height="128">

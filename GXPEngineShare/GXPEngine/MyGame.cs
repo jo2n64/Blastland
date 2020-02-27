@@ -152,7 +152,9 @@ public class MyGame : Game
                     pistol.alpha = 0f;
                 }
                 //Console.WriteLine(levels[level].B.Health);
+                Console.WriteLine(player.Damage);
                 Console.WriteLine(player.FireRate);
+                Console.WriteLine(player.Speed);
                 shoot(player);
                 checkFlamethrowerCollision();
                 destroyBullets(bullets);
