@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using GXPEngine;
 using GXPEngine.Core;
-class Player : GameObject
+public class Player : GameObject
 {
     private bool isHit;
     private float speed;
@@ -27,6 +27,7 @@ class Player : GameObject
     private int frameCount, startFrame;
     private string weaponName;
     private Sprite sprite;
+    private Sprite flamethrowerPlace;
     private Weapon[] weapons;
     private AnimationSprite animationSprite;
     private Sound hurtSound, pickupSound, walkSound;
@@ -52,37 +53,36 @@ class Player : GameObject
     //{
     //    this.level = level;
     //}
-    public Player(float speed) : base()
+    public Player(float speedX, float speedY) : base()
     {
         startFrame = 0;
         frameCount = 4;
         isHit = false;
         weaponNum = 0;
-        maxDamage = 5;
-        maxFireRate = 5;
+        maxDamage = 4;
+        maxFireRate = 4;
         hurtSound = new Sound("sounds/PlayerGettingHurt_sound416839__alineaudio__grunt1-death-pain.wav");
         pickupSound = new Sound("sounds/PickingUpSomething422651__trullilulli__sfx-player-action-phone-pick-up.wav");
         walkSound = new Sound("sounds/FootstepSoundsCS_1.6_Sounds.wav");
         sprite = new Sprite("square.png");
-        weapons = new Weapon[3];
-        weapons[0] = new Weapon(sprite.x, sprite.y, "triangle.png");
-        weapons[1] = new Flamethrower(sprite.x, sprite.y, this);
-        weapons[2] = new Knife(sprite.x, sprite.y);
+        weapons = new Weapon[2];
+        
         animationSprite = new AnimationSprite("player.png", 4, 4);
         sprite.SetOrigin(sprite.width / 2.0f, sprite.height / 2.0f);
         animationSprite.SetScaleXY(0.5f, 0.5f);
         animationSprite.SetOrigin(sprite.width, sprite.height * 2);
-        shootDelay = 650;
+        shootDelay = 800;
         shootTimer = Time.time;
         hitTimer = Time.time;
         walkTimer = Time.time;
         hitDelay = 2000;
         walkDelay = 276;
-        fireRate = 3;
+        fireRate = 1;
         startSpeed = speed;
+        speed = startSpeed;
         xModifier = 0;
         yModifier = 0;
-        damage = 3;
+        damage = 1;
         damageReceived = 1;
         damagePowerupsCollected = 0;
         health = 3;
@@ -93,9 +93,14 @@ class Player : GameObject
         rotValue = 0;
         animationSprite.SetFrame(4);
         sprite.alpha = 0f;
+        flamethrowerPlace = new Sprite("collidePoint.png");
+
+        weapons[0] = new Weapon(sprite.x, sprite.y);
+        weapons[1] = new Flamethrower(flamethrowerPlace.x, flamethrowerPlace.y, this);
         AddChild(sprite);
         AddChild(animationSprite);
-        for(int i = 0; i < weapons.Length; i++)
+        AddChild(flamethrowerPlace);
+        for (int i = 0; i < weapons.Length; i++)
         {
             AddChild(weapons[i]);
         }
@@ -107,12 +112,13 @@ class Player : GameObject
         handleInput();
         checks();
         checkWeaponSwitch();
-        Console.WriteLine(shootDelay);
-        //if(Time.time >= animTimer + animDelay)
-        //{
-        //    animationSprite.NextFrame();
-        //    animTimer = Time.time;
-        //}
+        if (health <= 0)
+        {
+            lives--;
+            health = 3;
+            isHit = true;
+            reposition(game.width / 2, game.height - 100);
+        }
         if (direction.x != 0 || direction.y != 0)
         {
             if (Time.time >= walkDelay + walkTimer)
@@ -124,19 +130,13 @@ class Player : GameObject
         if (direction.x == 0 || direction.y == 0) walkSound.Play(true);
         if (isHit)
         {
-            if (Time.time > hitTimer + hitDelay)
+            if (Time.time >= hitTimer + hitDelay)
             {
                 isHit = false;
                 animationSprite.alpha = 1f;
                 hitTimer = Time.time;
             }
         }
-        //Console.WriteLine(direction.x);
-        //if (Time.time > animDelay + animTimer)
-        //{
-        //    animationSprite.NextFrame();
-        //    animTimer = Time.time;
-        //}
     }
 
     private void setVector(float dirX, float dirY)
@@ -159,7 +159,7 @@ class Player : GameObject
     }
 
     public void reset() {
-        damage = 2;
+        damage = 1;
         damageReceived = 1;
         fireRate = 1;
         speed = startSpeed;
@@ -192,32 +192,28 @@ class Player : GameObject
                     break;
                 case MovementPowerup mP:
                     mP.LateDestroy();
-                    if (speed < 18)
+                    if (speed < 20)
                     {
-                        speed += 4;
-                        if (speed > 18) {
-                            speed = 18;
-                        }
+                        speed += 2;                             
+                    }
+                    if(fireRate > 1)
+                    {
+                        fireRate--;
+                        shootDelay *= 2;
                     }
                     if (damage > 1)
                     {
                         damage--;
                     }
-                    if (fireRate > 1)
-                    {
-                        fireRate--;
-                        shootDelay += 250;
-                    }
                     break;
                 case HealthPowerup h:                    
                     h.LateDestroy();
-                    pickupSound.Play();
+                    pickupSound.Play(false);
                     if (health < maxHealth) health++;
-                    //Console.WriteLine(health);
                     break;
                 case FuelPowerup f:
                     f.LateDestroy();
-                    pickupSound.Play();
+                    pickupSound.Play(false);
                     if (fuel < 75)
                     {
                         fuel += 20;
@@ -225,106 +221,61 @@ class Player : GameObject
                     break;
                 case DamagePowerup d:
                     d.LateDestroy();
-                    pickupSound.Play();
+                    pickupSound.Play(false);
                     if (damage < maxDamage)
                     {
-                        damage += 2;
-                        if (damage > maxDamage) {
-                            damage = maxDamage;
-                        }
+                        damage++;
                     }
                     if (speed > 10f)
                     {
                         speed -= 2f;
                     }
-                    if (fireRate > 1) {
-                        fireRate--;
-                        shootDelay += 250;
-                        Console.WriteLine(shootDelay);
-                    }
-
                     break;
                 case FireRatePowerup fr:
                     fr.LateDestroy();
-                    pickupSound.Play();
                     if (fireRate < maxFireRate)
                     {
-                        fireRate += 2;
-                        shootDelay -= 500;
-                        if (fireRate > maxFireRate) {
-                            fireRate--;
-                            shootDelay += 250;
-                        }
+                        fireRate++;
                     }
-                    if (damage > 1)
-                    {
-                        damage--;
-                    }
-                    if (speed > 12f)
-                    {
-                        speed -= 2f;
-                    }
+                    pickupSound.Play(false);
+                    shootDelay /= 2;
                     break;
-                case Enemy e:
-                    if (!isHit)
+                case EnemyCollider e:
+                    if (!isHit && e.isOn)
                     {
                         isHit = true;
                         animationSprite.alpha = 0.5f;
-                        health -= damageReceived;
-                        hurtSound.Play();
-                        if (health <= 0)
-                        {
-                            lives--;
-                            health = 3;
-                            reposition(game.width / 2, game.height - 100);
-                        }
+                        health -= 1;
+                        hurtSound.Play(false);
                     }
                     break;
                 case Spikes s:
                     //make the player invulnerable for a bit
                     if (!isHit)
                     {
-                        health -= damageReceived;
+                        health -= 1;
                         isHit = true;
                         animationSprite.alpha = 0.5f;
-                        hurtSound.Play();
-                        if (health <= 0)
-                        {
-                            lives--;
-                            health = 3;
-                            reposition(game.width / 2, game.height - 100);
-                        }
+                        hurtSound.Play(false);
                     }
                     break;
                 case Missile m:
                     if (!isHit)
                     {
-                        health -= damageReceived;
+                        health -= 1;
                         isHit = true;
                         animationSprite.alpha = 0.5f;
                         m.LateDestroy();
-                        hurtSound.Play();
-                        if (health <= 0)
-                        {
-                            lives--;
-                            health = 3;
-                            reposition(game.width / 2, game.height - 100);
-                        }
+                        hurtSound.Play(false);
                     }
                     break;
                 case EnemyBullet e:
                     //make the player invulnerable for a bit
-                    health -= damageReceived;
+                    health -= 1;
                     e.LateDestroy();
                     isHit = true;
-                    sprite.alpha = 0.5f;
-                    hurtSound.Play();
-                    if (health <= 0)
-                    {
-                        lives--;
-                        health = 3;
-                        reposition(game.width / 2, game.height - 100);
-                    }
+                    animationSprite.alpha = 0.5f;
+                    hurtSound.Play(false);
                     break;
             }
 
@@ -337,7 +288,6 @@ class Player : GameObject
         if (y > game.height - sprite.width/2)
         {
             y = game.height - sprite.width/2;
-            //Console.WriteLine("zhigubigule");
         }
     }
 
@@ -364,13 +314,11 @@ class Player : GameObject
         switch (weaponNum)
         {
             case 0:
-                //Console.WriteLine("weapon is a pistol");
                 weaponName = "Pistol";
                 weapons[0].isSelected = true;
                 weapons[1].isSelected = false;
                 break;
             case 1:
-                //Console.WriteLine("weapon is a flamethrower");
                 weaponName = "Flamethrower";
                 weapons[1].isSelected = true;
                 weapons[0].isSelected = false;
@@ -386,6 +334,8 @@ class Player : GameObject
         if (Input.GetKey(Key.A))
         {
             setVector(-1.0f, 0.0f);
+            flamethrowerPlace.x = -32f;
+            flamethrowerPlace.y = 0f;
             rotValue = -90.0f;
             setRange(4, 8);
             walkXAnim();
@@ -394,6 +344,8 @@ class Player : GameObject
         if (Input.GetKey(Key.D))
         {
             setVector(1.0f, 0.0f);
+            flamethrowerPlace.x = 64f;
+            flamethrowerPlace.y = 0f;
             rotValue = 90.0f;
             setRange(4, 4);
             walkXAnim();
@@ -401,6 +353,8 @@ class Player : GameObject
         if (Input.GetKey(Key.W))
         { 
             setVector(0.0f, -1.0f);
+            flamethrowerPlace.y = -64f;
+            flamethrowerPlace.x = 0f;
             rotValue = 0.0f;
             setRange(4, 0);
             walkYAnim();
@@ -410,6 +364,8 @@ class Player : GameObject
         if (Input.GetKey(Key.W) && Input.GetKey(Key.A))
         {
             setVector(-0.7f, -0.7f);
+            flamethrowerPlace.y = -32f;
+            flamethrowerPlace.x = -32f;
             rotValue = -45.0f;
             setRange(4, 0);
             walkYAnim();
@@ -419,6 +375,8 @@ class Player : GameObject
         {
             setVector(0.7f, -0.7f);
             rotValue = 45.0f;
+            flamethrowerPlace.y = -32f;
+            flamethrowerPlace.x = 32f;
             setRange(4, 0);
             walkYAnim();
             //animationSprite.SetFrame(6);
@@ -426,6 +384,8 @@ class Player : GameObject
         if (Input.GetKey(Key.S))
         {
             setVector(0.0f, 1.0f);
+            flamethrowerPlace.x = 0f;
+            flamethrowerPlace.y = 32f;
             rotValue = 180f;
             setRange(4, 12);
             walkYAnim();
@@ -433,6 +393,8 @@ class Player : GameObject
         if (Input.GetKey(Key.S) && Input.GetKey(Key.A))
         {
             setVector(-0.7f, 1.0f);
+            flamethrowerPlace.x = -32f;
+            flamethrowerPlace.y = 16f;
             rotValue = -135f;
             setRange(4, 12);
             walkYAnim();
@@ -440,6 +402,8 @@ class Player : GameObject
         if (Input.GetKey(Key.S) && Input.GetKey(Key.D))
         {
             setVector(0.7f, 1.0f);
+            flamethrowerPlace.x = 32f;
+            flamethrowerPlace.y = 16f;
             rotValue = 135f;
             setRange(4, 12);
             walkYAnim();
@@ -460,6 +424,7 @@ class Player : GameObject
         
 
         sprite.rotation = rotValue;
+        flamethrowerPlace.rotation = rotValue;
         for(int i = 0; i < weapons.Length; i++)
         {
             weapons[i].rotation = rotValue;

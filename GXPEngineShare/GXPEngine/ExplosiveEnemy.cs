@@ -7,50 +7,44 @@ class ExplosiveEnemy : Enemy
 {
     private int enlargeTimer, enlargeDelay;
     private int delay, timer;
-    private AnimationSprite anim;
+    //private AnimationSprite anim;
     private Sound explosionSound;
-    public ExplosiveEnemy(float x, float y, float speedX, float speedY) : base(x, y, speedX, speedY, 1, "plantspriteshee2222t.png", 6, 1)
+    public ExplosiveEnemy(float x, float y, float speedX, float speedY) : base(x, y, speedX, speedY, 1, "explodingenemy.png", 16, 1)
     {
         explosionSound = new Sound("sounds/Enemy_exploding459973__florianreichelt__huge-explosion.wav");
-       // AddChild(anim);
+        // AddChild(anim);
+        AddChild(colliderSprite);
+        colliderSprite.SetXY(0, 32);
+        colliderSprite.SetOrigin(width / 2, height / 2);
         enlargeTimer = Time.time;
         enlargeDelay = 50;
-        health = 1;
         timer = Time.time;
-        delay = 200;
+        delay = 62;
+        anim.SetOrigin(width * 2, height * 2);
     }
 
     private void Update() {
-        checkIfDead();
         handleAnim();
     }
 
     private void handleAnim() {
-        if (anim != null)
+        if (isDead)
         {
-            if (Time.time > timer + delay)
+            if (Time.time >= delay + timer)
             {
                 anim.NextFrame();
+                colliderSprite.scaleX += 0.1f;
+                colliderSprite.scaleY += 0.1f;
                 timer = Time.time;
+            }
+            if (anim.currentFrame >= 15)
+            {
+                LateDestroy();
+                explosionSound.Play();
             }
         }
     }
 
-    private void checkIfDead() {
-        if (isDead)
-        {
-            if (Time.time > enlargeTimer + enlargeDelay && scale < 3)
-            {
-                scale += 0.1f;
-                enlargeTimer = Time.time;
-            }
-            if (scale >= 3)
-            {
-                explosionSound.Play();
-                LateDestroy();
-            }
-        }
-    }
 
     
 }

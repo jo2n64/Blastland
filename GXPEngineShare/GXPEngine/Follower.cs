@@ -15,9 +15,9 @@ class Follower : Enemy
         this.targetPlayer = targetPlayer;
         delay = 150;
         timer = Time.time;
+        AddChild(colliderSprite);
         position = new Vector2(x, y);
         playerPos = new Vector2(targetPlayer.x, targetPlayer.y);
-        alpha = 1f;
         anim.SetOrigin(width, height);
         anim.SetScaleXY(0.25f);
     }

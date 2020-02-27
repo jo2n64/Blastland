@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using GXPEngine;
 using TiledMapParser;
-class Level : GameObject
+public class Level : GameObject
 {
     const int levelWidth = 40;
     const int levelHeight = 100;
 
     private Map map;
-    private Game game;
+    private MyGame game;
     private int width, height;
     private int shakeTimer, shakeDelay;
     private bool hasReachedEnd;
@@ -31,7 +31,7 @@ class Level : GameObject
     internal Boss B { get => b; set => b = value; }
     public bool HasReachedEnd { get => hasReachedEnd; set => hasReachedEnd = value; }
 
-    public Level(Player player, string mapPath, Game game) : base()
+    public Level(Player player, string mapPath, MyGame game) : base()
     {
         grid = new Sprite[levelHeight, levelWidth];
         this.game = game;
@@ -231,11 +231,6 @@ class Level : GameObject
                     player.Speed = obj.GetFloatProperty("moveY");
                     //Console.WriteLine(player.y);
                     break;
-                case "Enemy":
-                    e = new Enemy(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("moveX"), obj.GetFloatProperty("moveY"), obj.GetFloatProperty("scale"), "crawlingthing.png", 6, 1);
-                    enemies.Add(e);
-                    AddChild(e);
-                    break;
                 case "BounceEnemy":
                     e = new BounceEnemy(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("moveX"), obj.GetFloatProperty("moveY"), obj.GetFloatProperty("scale"));
                     enemies.Add(e);
@@ -251,26 +246,21 @@ class Level : GameObject
                     AddChild(e);
                     enemies.Add(e);
                     break;
-                case "Shooter":
-                    e = new Shooter(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("moveX"), obj.GetFloatProperty("moveY"), player, obj.GetIntProperty("shootDelay"));
-                    AddChild(e);
-                    enemies.Add(e);
-                    break;
                 case "ExplosiveEnemy":
                     e = new ExplosiveEnemy(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("moveX"), obj.GetFloatProperty("moveY"));
                     AddChild(e);
                     enemies.Add(e);
                     break;
                 case "Boss":
-                    b = new Boss(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), player, obj.GetIntProperty("health"));
+                    b = new Boss(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), player, obj.GetIntProperty("health"), game);
                     AddChild(b);
                     break;
                 case "Boss2":
-                    b = new Boss2(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), obj.GetIntProperty("health"));
+                    b = new Boss2(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), obj.GetIntProperty("health"), game);
                     AddChild(b);
                     break;
                 case "Boss3":
-                    b = new Boss3(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), player, obj.GetIntProperty("shootDelay"), obj.GetIntProperty("health"));
+                    b = new Boss3(obj.X, obj.Y - height * 128 + game.height, obj.GetFloatProperty("scale"), player, obj.GetIntProperty("shootDelay"), obj.GetIntProperty("health"), game);
                     AddChild(b);
                     break;
                 case "Heart":

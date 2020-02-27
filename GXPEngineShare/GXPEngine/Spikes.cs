@@ -16,7 +16,7 @@ class Spikes : Sprite
         
         anim = new AnimationSprite("spikes.png", 2, 1);
         anim.SetOrigin(0, height * 2);
-        anim.SetXY(-50, 0);
+        anim.SetXY(0, 30);
         anim.SetScaleXY(0.5f, 0.5f);
         AddChild(anim);
     }

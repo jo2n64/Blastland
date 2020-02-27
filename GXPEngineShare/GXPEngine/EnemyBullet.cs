@@ -8,13 +8,14 @@ class EnemyBullet : Sprite
     private float speedY, speedX;
     private int damage;
 
-    public EnemyBullet(float x, float y, float speedX, float speedY, float rotation) : base("0.png")
+    public EnemyBullet(float x, float y, float speedX, float speedY, float rotation, float scale) : base("0.png")
     {
         damage = 1;
         this.rotation = rotation;
         this.x = x;
         this.y = y;
         SetXY(x, y);
+        SetScaleXY(scale);
         this.speedX = speedX;
         this.speedY = speedY;
     }

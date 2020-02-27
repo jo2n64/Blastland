@@ -46,6 +46,7 @@
     <Compile Include="DamagePowerup.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemyBullet.cs" />
+    <Compile Include="EnemyCollider.cs" />
     <Compile Include="ExplosiveEnemy.cs" />
     <Compile Include="FireRatePowerup.cs" />
     <Compile Include="Flamethrower.cs" />
@@ -54,7 +55,6 @@
     <Compile Include="BossHealthbar.cs" />
     <Compile Include="HealthPowerup.cs" />
     <Compile Include="HUD.cs" />
-    <Compile Include="Knife.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Missile.cs" />
     <Compile Include="MovementPowerup.cs" />
@@ -99,7 +99,6 @@
     <Compile Include="Plane.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Powerup.cs" />
-    <Compile Include="Shooter.cs" />
     <Compile Include="Spikes.cs" />
     <Compile Include="Statsbar.cs" />
     <Compile Include="Wall.cs" />

@@ -10,11 +10,14 @@ class Boss3 : Boss
     private Player player;
     private int timer, delay;
     private List<Missile> missiles;
-    public Boss3(float x, float y, float scale, Player player, int delay, int health) : base(x, y, scale, player, health)
+    public Boss3(float x, float y, float scale, Player player, int delay, int health, MyGame game) : base(x, y, scale, player, health, game)
     {
         missiles = new List<Missile>();
         this.player = player;
         this.health = health;
+        AddChild(colliderSprite);
+        colliderSprite.SetOrigin(0, anim.height / 2);
+        colliderSprite.SetXY(-32f, 0);
         position = new Vector2(x, y);
         target = new Vector2(player.x, player.y);
         timer = Time.time;
@@ -34,7 +37,7 @@ class Boss3 : Boss
     }
 
     public void removeMissiles() { 
-        for(int i = 0; i < missiles.Count; i++)
+        for(int i = missiles.Count - 1; i >= 0; i--)
         {
             Missile m = missiles[i];
             m.LateDestroy();

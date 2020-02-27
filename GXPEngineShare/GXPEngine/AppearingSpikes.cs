@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GXPEngine;
+using GXPEngine.Core;
 class AppearingSpikes : Enemy
 {
     private int appearDelay, appearTimer;
@@ -16,6 +17,9 @@ class AppearingSpikes : Enemy
     {
         this.appearDelay = appearDelay;
         this.appearDelay = appearDelay;
+        colliderSprite.SetXY(0, height * 2);
+        AddChild(colliderSprite);
+        colliderSprite.scaleY = -2f;
         delay = 100;
         timer = Time.time;
         anim = new AnimationSprite("appearingspikes.png", 18, 1);
@@ -24,6 +28,7 @@ class AppearingSpikes : Enemy
         AddChild(anim);
         appearTimer = Time.time;
         hasAppeared = false;
+        createCollider();
     }
 
     private void Update() {
@@ -36,18 +41,14 @@ class AppearingSpikes : Enemy
         if (anim.currentFrame >= 7 && anim.currentFrame <= 14)
         {
             hasAppeared = true;
+            colliderSprite.isOn = true;
         }
         else
         {
             hasAppeared = false;
+            colliderSprite.isOn = false;
         }
     }
 
-    private void appear() {
-        if (Time.time > appearDelay + appearTimer)
-        {
-            hasAppeared = !hasAppeared;
-            appearTimer = Time.time;
-        }
-    }
+
 }

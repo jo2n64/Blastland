@@ -5,7 +5,6 @@ using System.Text;
 using GXPEngine;
 class BounceEnemy : Enemy
 {
-    private Sprite collisionChecker;
     private int timer, delay;
     public BounceEnemy (float x, float y, float speedX, float speedY, float scale) : base(x, y, speedX, speedY, scale, "crawlingthing.png", 6, 1)
     {
@@ -14,12 +13,16 @@ class BounceEnemy : Enemy
         anim.SetOrigin(width / 2, height / 2);
         anim.SetXY(-80, 0);
         AddChild(anim);
+        AddChild(colliderSprite);
+        colliderSprite.scaleX = 1.5f;
+        colliderSprite.SetXY(-64f, -32f);
         anim.Mirror(true, false);
        // AddChild(collisionChecker);
     }
 
     private void Update() {
         move();
+        blinkWhenHit();
         if(Time.time >= timer + delay)
         {
             anim.NextFrame();

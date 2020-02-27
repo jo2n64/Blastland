@@ -10,12 +10,15 @@ VERY FIRST THINGS:
 
 STUFF THAT NEED TO BE DONE:
 -make the last boss work - DUN(?)
--figure out the bars
+-figure out the bars - DUN(?)
 -figure out how to restart the levels - DUN
--fix up the flamethrower
+-fix up the flamethrower - DUN
 -fix the music stopping
--highscore at the end
--reseting stats
+-clear the screen from boss-spawned enemies, as well as hpbars when they die - DUN
+-highscore at the end - DUN
+-reseting stats - DUN
+-animation doesnt work when it goes up
+-enemy colliders
 -SCREEN.SHAKE - DUN
 
 MAJOR BUGS THAT NEED FIXING:

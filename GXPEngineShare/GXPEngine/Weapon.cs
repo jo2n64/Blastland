@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GXPEngine;
-class Weapon : Sprite
+class Weapon : GameObject
 {
     public bool isSelected;
-    public Weapon(float x, float y, string path) : base(path)
+    public Weapon(float x, float y) : base()
     {
         SetXY(x, y);
     }
 
     protected void Update() {
-        if (!isSelected) alpha = 0f;
-        if (isSelected) alpha = 1f;
     }
 }
 
