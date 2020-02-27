@@ -1,15 +1,6 @@
-D:\ALL PROGRAMMING STUFF\school related\Game Programming\GXPEngineShare\GXPEngine\bin\Debug\GXPEngine.exe
-D:\ALL PROGRAMMING STUFF\school related\Game Programming\GXPEngineShare\GXPEngine\bin\Debug\GXPEngine.pdb
-D:\ALL PROGRAMMING STUFF\school related\Game Programming\GXPEngineShare\GXPEngine\obj\x86\Debug\GXPEngine.csprojAssemblyReference.cache
-D:\ALL PROGRAMMING STUFF\school related\Game Programming\GXPEngineShare\GXPEngine\obj\x86\Debug\GXPEngine.exe
-D:\ALL PROGRAMMING STUFF\school related\Game Programming\GXPEngineShare\GXPEngine\obj\x86\Debug\GXPEngine.pdb
-D:\ALL PROGRAMMING STUFF\Lift Off\GXPEngineShare\GXPEngine\bin\Debug\GXPEngine.exe
-D:\ALL PROGRAMMING STUFF\Lift Off\GXPEngineShare\GXPEngine\bin\Debug\GXPEngine.pdb
-D:\ALL PROGRAMMING STUFF\Lift Off\GXPEngineShare\GXPEngine\obj\x86\Debug\GXPEngine.csprojAssemblyReference.cache
-D:\ALL PROGRAMMING STUFF\Lift Off\GXPEngineShare\GXPEngine\obj\x86\Debug\GXPEngine.exe
-D:\ALL PROGRAMMING STUFF\Lift Off\GXPEngineShare\GXPEngine\obj\x86\Debug\GXPEngine.pdb
 C:\Users\Valentin Dimitrov\Documents\GitHub\Blastland\GXPEngineShare\GXPEngine\bin\Debug\GXPEngine.exe
 C:\Users\Valentin Dimitrov\Documents\GitHub\Blastland\GXPEngineShare\GXPEngine\bin\Debug\GXPEngine.pdb
 C:\Users\Valentin Dimitrov\Documents\GitHub\Blastland\GXPEngineShare\GXPEngine\obj\x86\Debug\GXPEngine.csprojAssemblyReference.cache
 C:\Users\Valentin Dimitrov\Documents\GitHub\Blastland\GXPEngineShare\GXPEngine\obj\x86\Debug\GXPEngine.exe
 C:\Users\Valentin Dimitrov\Documents\GitHub\Blastland\GXPEngineShare\GXPEngine\obj\x86\Debug\GXPEngine.pdb
+
