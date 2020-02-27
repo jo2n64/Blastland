@@ -52,7 +52,7 @@ public class MyGame : Game
         isShaking = false;
         state = GameState.Startup;
         levels = new Level[3];
-        player = new Player(15f, 15f);
+        player = new Player(16f);
         loadLevels();
         bullets = new List<Bullet>();
         screens = new Canvas(1920, 1080);
@@ -112,9 +112,9 @@ public class MyGame : Game
                 break;
             case GameState.Game:
                 screens.graphics.Clear(Color.Empty);
-                moveBar.ThingToAmount = -player.Speed / 5;
-                damageBar.ThingToAmount = -player.Damage;
-                fireRateBar.ThingToAmount = -player.FireRate;
+                moveBar.ThingToAmount =  (-player.Speed + 10  ) / 2 ; 
+                damageBar.ThingToAmount = -player.Damage + 1;
+                fireRateBar.ThingToAmount = -player.FireRate + 1;
                 healthBar.ThingToAmount = -player.Health * 3f;
                 fuelBar.ThingToAmount = -player.Fuel;
                 bossBars[level].ThingToAmount = levels[level].B.Health;
@@ -128,7 +128,8 @@ public class MyGame : Game
                     flamethrower.alpha = 1f;
                     pistol.alpha = 0f;
                 }
-                Console.WriteLine(levels[level].B.Health);
+                //Console.WriteLine(levels[level].B.Health);
+                Console.WriteLine(player.FireRate);
                 shoot(player);
                 checkFlamethrowerCollision();
                 destroyBullets(bullets);
@@ -205,7 +206,7 @@ public class MyGame : Game
         //player.FireRate = 1;
         //player.ShootDelay = 800;
         playerIsDead = false;
-        player = new Player(15f, 15f);
+        player = new Player(20f);
         player.reposition(width / 2, height - 100);
         switchLevel(level);
         AddChild(player);
@@ -264,7 +265,7 @@ public class MyGame : Game
                 b.LateDestroy();
                 buls.Remove(b);
                 boss.Health -= player.Damage;
-                Console.WriteLine("Boss health is " + boss.Health);
+                //Console.WriteLine("Boss health is " + boss.Health);
                 if (boss.Health <= 0)
                 {
                     if (level < 2)
@@ -307,7 +308,7 @@ public class MyGame : Game
                     buls.Remove(b);
                     shakeScreen();
                     temp.Health -= player.Damage;
-                    Console.WriteLine(isShaking);
+                    //Console.WriteLine(isShaking);
                     if (temp.Health <= 0)
                     {
                         levels[level].Enemies.Remove(temp);

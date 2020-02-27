@@ -52,14 +52,14 @@ class Player : GameObject
     //{
     //    this.level = level;
     //}
-    public Player(float speedX, float speedY) : base()
+    public Player(float speed) : base()
     {
         startFrame = 0;
         frameCount = 4;
         isHit = false;
         weaponNum = 0;
-        maxDamage = 4;
-        maxFireRate = 4;
+        maxDamage = 5;
+        maxFireRate = 5;
         hurtSound = new Sound("sounds/PlayerGettingHurt_sound416839__alineaudio__grunt1-death-pain.wav");
         pickupSound = new Sound("sounds/PickingUpSomething422651__trullilulli__sfx-player-action-phone-pick-up.wav");
         walkSound = new Sound("sounds/FootstepSoundsCS_1.6_Sounds.wav");
@@ -78,12 +78,11 @@ class Player : GameObject
         walkTimer = Time.time;
         hitDelay = 2000;
         walkDelay = 276;
-        fireRate = 1;
+        fireRate = 2;
         startSpeed = speed;
-        speed = startSpeed;
         xModifier = 0;
         yModifier = 0;
-        damage = 1;
+        damage = 2;
         damageReceived = 1;
         damagePowerupsCollected = 0;
         health = 3;
@@ -160,7 +159,7 @@ class Player : GameObject
     }
 
     public void reset() {
-        damage = 1;
+        damage = 2;
         damageReceived = 1;
         fireRate = 1;
         speed = startSpeed;
@@ -193,22 +192,28 @@ class Player : GameObject
                     break;
                 case MovementPowerup mP:
                     mP.LateDestroy();
-                    if (speed < 20)
+                    if (speed < 18)
                     {
-                        speed += 2;
-                        fireRate--;
-                        shootDelay *= 2;       
+                        speed += 4;
+                        if (speed > 18) {
+                            speed = 18;
+                        }
                     }
                     if (damage > 1)
                     {
                         damage--;
+                    }
+                    if (fireRate > 1)
+                    {
+                        fireRate--;
+                        shootDelay += 500;
                     }
                     break;
                 case HealthPowerup h:                    
                     h.LateDestroy();
                     pickupSound.Play();
                     if (health < maxHealth) health++;
-                    Console.WriteLine(health);
+                    //Console.WriteLine(health);
                     break;
                 case FuelPowerup f:
                     f.LateDestroy();
@@ -223,21 +228,41 @@ class Player : GameObject
                     pickupSound.Play();
                     if (damage < maxDamage)
                     {
-                        damage++;
+                        damage += 2;
+                        if (damage > maxDamage) {
+                            damage = maxDamage;
+                        }
                     }
                     if (speed > 10f)
                     {
                         speed -= 2f;
                     }
+                    if (fireRate > 1) {
+                        fireRate--;
+                        shootDelay += 500;
+                    }
+
                     break;
                 case FireRatePowerup fr:
                     fr.LateDestroy();
+                    pickupSound.Play();
                     if (fireRate < maxFireRate)
                     {
-                        fireRate++;
+                        fireRate += 2;
+                        shootDelay -= 1000;
+                        if (fireRate > maxFireRate) {
+                            fireRate--;
+                            shootDelay += 500;
+                        }
                     }
-                    pickupSound.Play();
-                    shootDelay /= 2;
+                    if (damage > 1)
+                    {
+                        damage--;
+                    }
+                    if (speed > 12f)
+                    {
+                        speed -= 2f;
+                    }
                     break;
                 case Enemy e:
                     if (!isHit)
@@ -311,7 +336,7 @@ class Player : GameObject
         if (y > game.height - sprite.width/2)
         {
             y = game.height - sprite.width/2;
-            Console.WriteLine("zhigubigule");
+            //Console.WriteLine("zhigubigule");
         }
     }
 
