@@ -97,7 +97,6 @@ public class MyGame : Game
             sc = music.Play(true);
             gameOver.Play();
             playerIsDead = true;
-            Console.WriteLine("YOU DIED");
             clearScreen();
         }
         
@@ -133,14 +132,16 @@ public class MyGame : Game
                 screens.graphics.DrawString("X", font, Brushes.HotPink, 125, height - 225);
                 screens.graphics.DrawString(player.Lives.ToString(),font, Brushes.Black, 225, height - 225);
                 screens.graphics.DrawString("Score: " + player.Score.ToString(), font, Brushes.Black, 20, height / 2);
-                moveBar.ThingToAmount = -player.Speed / 5;
-                damageBar.ThingToAmount = -player.Damage;
-                fireRateBar.ThingToAmount = -player.FireRate;
+                moveBar.ThingToAmount = (-player.Speed + 10) / 2;
+                damageBar.ThingToAmount = -player.Damage + 1;
+                fireRateBar.ThingToAmount = -player.FireRate + 1;
                 healthBar.ThingToAmount = -player.Health * 3f;
                 fuelBar.ThingToAmount = -player.Fuel;
                 bossBars[level].ThingToAmount = levels[level].B.Health;
                 checkBossBars();
                 checkSelectedWeapon();
+               // Console.WriteLine(player.FireRate);
+                Console.WriteLine(fireRateBar.ThingToAmount);
                 if (player.Weapons[0].isSelected)
                 {
                     flamethrower.alpha = 0f;
@@ -151,10 +152,6 @@ public class MyGame : Game
                     flamethrower.alpha = 1f;
                     pistol.alpha = 0f;
                 }
-                //Console.WriteLine(levels[level].B.Health);
-                Console.WriteLine(player.Damage);
-                Console.WriteLine(player.FireRate);
-                Console.WriteLine(player.Speed);
                 shoot(player);
                 checkFlamethrowerCollision();
                 destroyBullets(bullets);
@@ -331,7 +328,6 @@ public class MyGame : Game
                 b.LateDestroy();
                 buls.Remove(b);
                 boss.Health -= player.Damage;
-                Console.WriteLine("Boss health is " + boss.Health);
                 if (boss.Health <= 0)
                 {
                     if (level < 2)
@@ -375,7 +371,6 @@ public class MyGame : Game
                     shakeScreen();
                     temp.Health -= player.Damage;
                     temp.isHit = true;
-                    Console.WriteLine(isShaking);
                     if (temp.Health <= 0)
                     {
                         levels[level].Enemies.Remove(temp);
@@ -430,7 +425,6 @@ public class MyGame : Game
                 
                 if (Time.time >= flamethrowerDelay + flamethrowerTimer)
                 {
-                    Console.WriteLine("yey");
                     b.Health -= 5;
                     flamethrowerTimer = Time.time;
                 }

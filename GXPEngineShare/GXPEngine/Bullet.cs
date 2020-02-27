@@ -18,6 +18,7 @@ class Bullet : Sprite
         this.x = x;
         this.y = y;
         SetXY(x, y);
+        SetOrigin(width / 2, 0);
         this.speedX = speedX;
         this.speedY = speedY;
     }

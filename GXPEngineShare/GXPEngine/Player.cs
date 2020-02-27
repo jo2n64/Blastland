@@ -59,8 +59,8 @@ public class Player : GameObject
         frameCount = 4;
         isHit = false;
         weaponNum = 0;
-        maxDamage = 4;
-        maxFireRate = 4;
+        maxDamage = 5;
+        maxFireRate = 5;
         hurtSound = new Sound("sounds/PlayerGettingHurt_sound416839__alineaudio__grunt1-death-pain.wav");
         pickupSound = new Sound("sounds/PickingUpSomething422651__trullilulli__sfx-player-action-phone-pick-up.wav");
         walkSound = new Sound("sounds/FootstepSoundsCS_1.6_Sounds.wav");
@@ -112,7 +112,6 @@ public class Player : GameObject
         handleInput();
         checks();
         checkWeaponSwitch();
-        Console.WriteLine(shootDelay);
         //if(Time.time >= animTimer + animDelay)
         //{
         //    animationSprite.NextFrame();
@@ -205,11 +204,11 @@ public class Player : GameObject
                     {
                         damage--;
                     }
-                    if (fireRate > 1)
-                    {
-                        fireRate--;
-                        shootDelay += 250;
-                    }
+                    //if (fireRate > 1)
+                    //{
+                    //    fireRate--;
+                    //    shootDelay += 250;
+                    //}
                     break;
                 case HealthPowerup h:                    
                     h.LateDestroy();
@@ -247,14 +246,15 @@ public class Player : GameObject
                     if (fireRate < maxFireRate)
                     {
                         fireRate += 2;
-                        shootDelay -= 500;
-                        if (fireRate > maxFireRate) {
-                            fireRate--;
-                            shootDelay += 250;
-                        }
+                        shootDelay /= 2;
+                        // shootDelay -= 500;
+                        //if (fireRate > maxFireRate) {
+                        //    fireRate--;
+                        //    shootDelay += 250;
+                        //}
                     }
                     pickupSound.Play(false);
-                    shootDelay /= 2;
+
                     break;
                 case EnemyCollider e:
                     if (!isHit && e.isOn)
