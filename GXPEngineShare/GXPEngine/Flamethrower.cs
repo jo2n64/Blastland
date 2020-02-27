@@ -7,6 +7,7 @@ class Flamethrower : Weapon
 {
     Player player;
     private AnimationSprite anim;
+    private SoundChannel ch;
     private bool isUsed;
     private int damage;
     private int delay, timer;
@@ -27,10 +28,10 @@ class Flamethrower : Weapon
         soundTimer = Time.time;
         soundDelay = 1254;
         delay = 50;
-        animTimer = Time.time;     
+        animTimer = Time.time;
         animDelay = 160;
         anim = new AnimationSprite("flames.png", 6, 1);
-        flamethrowerSound = new Sound("FlameTrowerLongWithFadeOut.wav");
+        flamethrowerSound = new Sound("sounds/FlameTrowerLongWithFadeOut.wav");
         anim.SetOrigin(anim.width / 2, anim.height + 32);
         AddChildAt(anim, 0);
     }
@@ -38,8 +39,19 @@ class Flamethrower : Weapon
     private void Update()
     {
         base.Update();
-        if (player.Fuel <= 0 || !isUsed) anim.alpha = 0f;
-        
+        if (player.Fuel <= 0 || !isUsed)
+        {
+            anim.alpha = 0f;
+            ch = flamethrowerSound.Play(true, 0, 0);
+        }
+        if (player.Fuel > 0 && isUsed)
+        {
+            if (Time.time >= soundDelay + soundTimer)
+            {
+                flamethrowerSound.Play();
+                soundTimer = Time.time;
+            }
+        }
         handleInput();
     }
 
@@ -54,18 +66,17 @@ class Flamethrower : Weapon
                 player.Fuel--;
                 timer = Time.time;
             }
-            if (Time.time >= soundDelay + soundTimer)
-            {
-                flamethrowerSound.Play();
-                soundTimer = Time.time;
-            }
+
             if (Time.time >= animTimer + animDelay)
             {
                 anim.NextFrame();
                 animTimer = Time.time;
             }
         }
-        if (Input.GetKeyUp(Key.TWO) && isUsed) { isUsed = false; }
+        if (Input.GetKeyUp(Key.TWO) && isUsed) {
+            isUsed = false;
+            ch.Stop();
+        }
         //if (Input.GetKeyUp(Key.SPACE))
         //{
         //    alpha = 0f;

@@ -130,13 +130,14 @@ public class Player : GameObject
         if (direction.x == 0 || direction.y == 0) walkSound.Play(true);
         if (isHit)
         {
+            animationSprite.alpha = 0.5f;
             if (Time.time >= hitTimer + hitDelay)
             {
                 isHit = false;
-                animationSprite.alpha = 1f;
                 hitTimer = Time.time;
             }
         }
+        if (!isHit) animationSprite.alpha = 1f;
     }
 
     private void setVector(float dirX, float dirY)
@@ -244,7 +245,6 @@ public class Player : GameObject
                     if (!isHit && e.isOn)
                     {
                         isHit = true;
-                        animationSprite.alpha = 0.5f;
                         health -= 1;
                         hurtSound.Play(false);
                     }
