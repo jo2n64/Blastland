@@ -94,7 +94,7 @@ public class Player : GameObject
         animationSprite.SetFrame(4);
         sprite.alpha = 0f;
         flamethrowerPlace = new Sprite("collidePoint.png");
-
+        flamethrowerPlace.alpha = 0f;
         weapons[0] = new Weapon(sprite.x, sprite.y);
         weapons[1] = new Flamethrower(flamethrowerPlace.x, flamethrowerPlace.y, this);
         AddChild(sprite);

@@ -32,7 +32,7 @@ class Boss : Enemy
     }
 
     private void Update() {
-        if (y + anim.height + 100 > 0)
+        if (y + anim.height + 200 > 0)
         {
             spawnEnemy();
             handleAnim();

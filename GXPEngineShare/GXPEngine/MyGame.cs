@@ -17,8 +17,8 @@ public class MyGame : Game
     Canvas screens;
     Font font;
     private Sound shootSound, enemyDeathSound;
-    private Sound music, gameOverMusic, winMusic;
-    private SoundChannel sc, scGameOver, scWin;
+    private Sound music, gameOverMusic, winMusic, introMusic;
+    private SoundChannel sc, scGameOver, scWin, scIntro;
     private GameState state;
     private Image img, tutorialImg, buttonImg, endImg, gameOverImg, gameOverButtonImg, endButtonImg;
     public Level[] levels;
@@ -45,6 +45,7 @@ public class MyGame : Game
         enemyDeathSound = new Sound("sounds/NormalEnemyDeath.wav");
         music = new Sound("sounds/Mick Gordon - 02. Rip & Tear.ogg", true, false);
         gameOverMusic = new Sound("sounds/Sega Rally - 15 Game Over Yeah!.mp3", false, true);
+        introMusic = new Sound("sounds/DooM II OST - Title Music.mp3", false, true);
         winMusic = new Sound("sounds/Sonic Advance OST Act Clear.mp3", false, true);
         tutorialImg = Image.FromFile("Instruction_screen.png");
         endImg = Image.FromFile("endscreenwithout.png");
@@ -86,7 +87,7 @@ public class MyGame : Game
         shakeTimer = Time.time;
         shakeDelay = 200;
         AddChild(screens);
-
+        scIntro = introMusic.Play();
     }
 
     
@@ -119,6 +120,7 @@ public class MyGame : Game
                 }
                 if (Input.GetKeyDown(Key.ONE) || Input.GetKeyDown(Key.TWO))
                 {
+                    
                     state = GameState.Tutorial;
                 }
                 break;
@@ -129,6 +131,7 @@ public class MyGame : Game
                 {
                     reset();
                     sc = music.Play();
+                    if(scIntro.IsPlaying) scIntro.Stop();
                 }
                 break;
             case GameState.Game:

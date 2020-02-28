@@ -16,6 +16,7 @@ class Boss2 : Boss
         {
             shootPositions[i] = new Sprite("collidePoint.png");
             shootPositions[i].SetXY(Anim.x - 16 + i * 32, 0);
+            shootPositions[i].alpha = 0f;
             AddChild(shootPositions[i]);
         }
         timer = Time.time;
@@ -37,8 +38,8 @@ class Boss2 : Boss
             {
                 if (y + anim.height + 100 > 0)
                 {
-                    b = new EnemyBullet(shootPositions[1].x, shootPositions[1].y, 0, 10, 0, bulletScale);
-                    b1 = new EnemyBullet(shootPositions[2].x, shootPositions[2].y, 0, 10, 0, bulletScale);
+                    b = new EnemyBullet(shootPositions[1].x, shootPositions[1].y, 0, 10, 0, bulletScale / 6);
+                    b1 = new EnemyBullet(shootPositions[2].x, shootPositions[2].y, 0, 10, 0, bulletScale / 6);
                     AddChild(b);
                     AddChild(b1);
                     timer = Time.time;
@@ -48,8 +49,8 @@ class Boss2 : Boss
             {
                 if (y + anim.height + 100 > 0)
                 {
-                    b = new EnemyBullet(shootPositions[0].x, shootPositions[0].y, Utils.Random(0f, -1.5f), 10, 0, bulletScale);
-                    b1 = new EnemyBullet(shootPositions[3].x, shootPositions[2].y, Utils.Random(0f, 1.5f), 10, 0, bulletScale);
+                    b = new EnemyBullet(shootPositions[0].x, shootPositions[0].y, Utils.Random(0f, -1.5f), 10, 0, bulletScale / 6);
+                    b1 = new EnemyBullet(shootPositions[3].x, shootPositions[2].y, Utils.Random(0f, 1.5f), 10, 0, bulletScale/ 6);
                     AddChild(b);
                     AddChild(b1);
                     timer2 = Time.time;
